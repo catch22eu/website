@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+
+  <title>Microstepping with DRV8824</title>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="description" content="Explanation why microstepping with the DRV8824 does not work" />
+  <meta name="keywords" content="DRV8824, micro, stepping, problem" />
+  <link rel="stylesheet" href="https://catch22eu.github.io/website/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+      <h1><a href="#">DRV8824 Micro Stepping</a></h1>
+      <h2>Why does it not work?</h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/omnirobot/">Robot Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/omnirobot/robot">The Omnirobot</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">IPC with PRU</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">PRU in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/japanrobotstores">Japan Robot Stores</a></li>
+  <li><a href="http://catch22eu.github.io/website/robotproject">Pivot Robot</a></li>   
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+
+
+			<h2>Introduction</h2>
+The explanation below is the original work from catch22 published on Pololu's forum, and gives the theretical background what is happening when using the DRV8824 in microstepping mode.<br /><br />
+<img src="drv8824.jpg" width="600" height="600" alt="DRV8824" /><br /><br />
+
+			<h2>Explanation</h2>
+In brief, micro-stepping appears to be impossible with the driver. After measuring the voltage over the stepper motor coils, which for static situations (meaning the motor not turning fast) is similar as measuring the motor current, it it shows that there are steps missing in the motion profile (see picture below).
+<img src="missingsteps.png" width="600" height="400" alt="DRV8824 missing steps" /><br /><br />
+
+The motor can be modelled as an L/R network with a resistor and inductance in series, in which the resistance is both the motor resistance Rmotor and Rds(on). In general, the formula for such an L/R network given a step response input voltage is given by:<br /><br />
+
+Vstep(t) = Vdifferential * (1-exp(-(R/L)*t))<br /><br />
+
+Where Vdifferential is the differential voltage, which equals the motor voltage Vmot in initial state.<br /><br />
+
+When the voltage is removed again, the voltage across the L/R network is given by:<br /><br />
+
+Vdecay(t') = Vdifferential * exp(-(R/L)*t')<br /><br />
+
+So both are essentially exponentials with time constant R/L and amplitude given by the voltage differential. For the first PWM with duty cycle given by the blank time Tblank, the voltage across the stepper motor is:<br /><br />
+
+V1 = Vmot * ( 1 - exp(-(R/L)*Tblank))<br /><br />
+
+Then using slow decay, the voltage decays to:<br /><br />
+
+V2 = V1 * exp(-(R/L)*Toff)<br /><br />
+
+If this voltage is not decayed to zero volt, e.g. when Toff is too small, we end up with a residual voltage. With the next PWM cycle, voltage is again increase by approximately the value of V1, and the residual voltage is approximately twice the residual voltage of the first PWM cycle. This voltage increase continues until equilibrium state is reached.<br /><br />
+
+An estimate of this can be calculated by linearising both exponential functions around the voltage in this equilibrium state. This equilibrium state is when the voltage increase due to Tblank is equal to the voltage decrease of Toff. Both are given by the linearisation of the first to formulae:<br /><br />
+
+Vincrease(t) ~ (Vmot - Veq) * (R/L) * t<br /><br />
+
+Vdecrease(t) ~ Veq * (R/L) * t<br /><br />
+
+In equilibrium state Vincrease(Tblank) equals Vdecrease(Toff):<br /><br />
+
+(Vmot - Veq) * (R/L) * Tblank = Veq * (R/L) * Toff<br /><br />
+
+or<br /><br />
+
+Veq = Vmot * Tblank / (Toff + Tblank)<br /><br />
+
+So the equilibrium state depends on the motor voltage, and the ratio between Toff and Tblank, and is independant of R/L. The DRV8824 has a minimum duty cycle (Tblank) of 3.65 microseconds. Given the PWM frequency of 50kHz (or 20 microseconds period), the remaining time (Toff) the motor voltage is switched off is then 16.3 microseconds. The minimum motor voltage is 8.2V for this driver, which results in a minimum voltage of:<br /><br />
+
+Veq = 8.2 * 3.65 / 20 = 1.49V<br /><br />
+
+That's 18% of Vmot. It's also possible to simulate this behaviour using the first two formulae, giving the graphs attached / below. Within about 6 msecs, equilibrium state is reached. 			
+<br /><br />
+						
+			<img src="drv8824slowdecay.png" width="600" height="400" alt="DRV8824 in slow decay" /><br /><br />
+
+        <br />
+        <br />
+        <br />
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/omnirobot/">Robot Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/omnirobot/robot">The Omnirobot</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">IPC with PRU</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">PRU in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/japanrobotstores">Japan Robot Stores</a></li>
+  <li><a href="http://catch22eu.github.io/website/robotproject">Pivot Robot</a></li>   
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22eu.github.io/website/">Catch22 Blog</a></li>
+	<li><a href="http://catch22eu.github.io/website/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22eu.github.io/website/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22eu.github.io/website/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22eu.github.io/website/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22eu.github.io/website/free" title="free internet">
+  <img src="https://catch22eu.github.io/website/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

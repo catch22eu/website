@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="Guide on enabling the UIO Beaglebone PRU driver on recent kernel images" />
+  <meta name="keywords" content="beaglebone, PRU, uio, remoteproc, install, driver, example, howto, guide, tutorial" />
+  <title>Enabling the Beaglebone PRU UIO Driver in Recent Kernels</title>
+  <link rel="stylesheet" href="https://catch22eu.github.io/website/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Enabling the UIO PRU Driver in Recent Kernels</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+<h2>Introduction</h2>
+<p>The AM335x processor used on the Beaglebone, hosts next to the ARM main CPU two additional CPU cores called PRU (Programmable Realtime Units). This brings next to mainline linux and connectivity, also real-time, lightning fast  GPIO. A driver is needed to accommodate interaction between the ARM host processor and the PRU remote processors. Although the Remoteproc driver is now standard, the UIO driver is still used because of it's simplicity (compare <a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc/">this example</a> with <a href="http://processors.wiki.ti.com/index.php/PRU-ICSS_Remoteproc_and_RPMsg">this one</a>). This guide is intended to document how to enable the UIO PRU driver in newer Debian Beaglebone images.</p>
+
+<h2>Prerequisite: a working and compatible image</h2>
+<p>First off, this guide is based on a known to be working Beaglebone image. Testing shows that there's actually only one image on Beaglebone.org that is suitable, at least, in combination with a Beaglebone Green, which is used here (see also note 1 and 2 below regarding kernels and making bootable sd-cards):</p> 
+
+<table>
+  <tr>
+    <th>image (beaglebone.org)</th>
+    <th> UIO </th>
+    <th>Remoteproc</th>
+    <th>Remark</th>
+  </tr>
+  <tr>
+    <td>bone-debian-8.7-lxqt-armhf-2017-03-19-4gb.img</td>
+    <td>no</td>
+    <td>yes</td>
+    <td>Remoteproc hard-coded in kernel</td>
+  </tr>
+  <tr>
+    <td>bone-debian-8.7-iot-armhf-2017-03-19-4gb.img</td>
+    <td>no</td>
+    <td>yes</td>
+    <td>Remoteproc hard-coded in kernel</td>
+  </tr>
+  <tr>
+    <td><a href="https://debian.beagleboard.org/images/bone-debian-8.6-lxqt-4gb-armhf-2016-11-06-4gb.img.xz">bone-debian-8.6-lxqt-4gb-armhf-2016-11-06-4gb.img</a></td>
+    <td>yes</td>
+    <td>yes</td>
+    <td>Only usable image for BBG at time of writing</td>
+  </tr>
+  <tr>
+    <td>bone-debian-8.6-iot-armhf-2016-11-06-4gb.img</td>
+    <td>?</td>
+    <td>?</td>
+    <td>Did not boot on BBG</td>
+  </tr>
+  <tr>
+    <td>bone-debian-8.6-iot-armhf-2016-12-09-4gb.img</td>
+    <td>?</td>
+    <td>?</td>
+    <td>Did not boot on BBG</td>
+  </tr>
+  <tr>
+    <td>bone-debian-8.3-lxqt-4gb-armhf-2016-01-24-4gb.img</td>
+    <td>no</td>
+    <td>yes</td>
+    <td>Does not have .dts source files that can be used <br> shown as "Debian 8.5 2016-05-13 4GB SD LXQT"</td>
+  </tr>
+</table>
+
+
+<p><br>After downloading the image, writing it to an sd-card and booting the Beaglebone from it, the status of the uio driver can be polled:</p>
+<code>
+	lsmod | grep uio
+</code>
+<p>which reveals:</p>
+<code>
+	uio_pdrv_genirq 3923 0 <br>
+	uio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10524 1 uio_pdrv_genirq</code>
+<p>This could lead to the incorrect conclusion the uio driver has already been inabled. Therefore, the uio driver needs to be enabled, and the remoteproc driver disabled. </p>
+
+<h2>How to Enable the UIO driver</h2>
+<p>The steps essentially boil down to the following main steps:</p>
+<ul>
+	<li>enable the UIO driver and disable the Remoteproc driver in the device tree binary (dtb)</li>  
+	<li>modify eUnv.txt to use the modified dtb</li>
+	<li>blacklist the Remoteproc drivers</li>
+</ul>
+<p>The first step indicates that next to the normal way of enabling and disabling kernel drivers, modifying the device tree is needed to enable the UIO driver. As a side note, this also is the case for enabling the Wireless driver on a Beaglebone Green Wireless - it took a while to figure that out. </p>
+
+<h3>Locate the source files of the device tree binaries</h3>
+<p>When using the Beaglebone image downloaded from Beaglebone.org, at least the version used here, the source of the device tree binaries (dtb's) is provided in the /opt/source/ directory:</p>
+<code>
+	cd /opt/source/dtb-4.4-ti/
+</code>
+<p>It's well possible this is also provided by the factory installed image on the EMMC of your Beaglebone. Otherwise the git repository can be cloned as well, but make sure the correct branch is selected (in this case the "4.4-ti" branch matching the kernel version of the image), by issuing the command "git clone -b 4.4-ti https://github.com/RobertCNelson/dtb-rebuilder dtb-4.4-ti --depth=1" in a suitable empty directory, e.g. /opt/source/.</p>
+
+<h3>Modify your dtb to enable the UIO driver</h3>
+<p>Check which board file you need to modify. As explained in the prerequisites above, each Beaglebone has it’s own .dtb file. It’s the corresponding source file that has to be modified to enable the UIO driver, for which the filename ends with .dts. In this case, the am335x-bonegreen.dts is modified as an example: </p>
+<code>
+	nano src/arm/am335x-bonegreen.dts
+</code>
+<p>Then locate and uncomment the pruss uio part, and disable the remoteproc part:</p>
+<code>
+	#include "am33xx-pruss-uio.dtsi"<br>
+	/* #include "am33xx-pruss-rproc.dtsi" */
+</code>
+<p>Compile the board files and install by issuing the make command (assuming your're still in the /opt/source/dtb-4.4-ti directory where the Makefile is located: </p>
+<code>	
+	make<br>
+	sudo make install
+</code>
+<h3>Modify your uEnv.txt to use the modified dtb</h3>
+<p>Ensure the adapted device tree binary is used during boot by editing the /boot/uEnv.txt:
+<code>
+	sudo nano /boot/uEnv.txt
+</code>
+<p> and uncomment the empty "#dtb=" by mentioning the corrected dtb in there: </p>
+<code>
+	dtb=am335x-bonegreen.dts
+</code> 
+
+<h3>Blacklist the Remoteproc drivers:</h3>
+<p>Edit or add a blacklist file /etc/modprobe.d/pruss-blacklist.conf: </p>
+<code>sudo nano /etc/modprobe.d/pruss-blacklist.conf</code>
+<p>By adding the the 3 lines to this file:</p>
+<code>	blacklist pruss<br>
+	blacklist pruss_intc<br>
+	blacklist pru-rproc</code>
+<p>And ensure uio_pruss is of course not mentioned here as blacklisted. Then reboot the Beaglebone:</p>
+<code>
+	sudo reboot
+</code>
+
+<h3>Check if UIO is enabled</h3>
+<p>Test to see if the device tree file loaded successfully:</p>
+<code>lsmod |grep  uio</code>
+<p>This should now show:</p>
+<code>	
+	uio_pruss&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4928 0<br>
+	uio_pdrv_genirq 3539 0<br>
+	uio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8822 2 uio_pruss,uio_pdrv_genirq</code>
+<p>Instead of the response shown earlier. As next step, check these additional guides how to <a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c/">code the PRU in C</a>, and how to <a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">share memory between the ARM host and PRU processors</a>. To support and or give feedback, feel free to comment on the beagleboard.org forum. </p>
+
+<h2>Closing Remarks</h2>
+<p>The Beaglebone is a challenging, open source Single Board Computer, with huge potential, but has a steep learning curve given it's complexity and way things are dealt with and change over time causing out of date guides and the like. Hopefully this guide remains to help out long enough and gets you going with the real interesting part - programming the PRU's themselves. Enjoy!</p>
+
+<h2>Notes</h2>
+<p>1) Apart from using an image for the complete OS, a kernel upgrade might also be workable. The linux-image-4.4.30-ti-r64 is the kernel used in the working image mentioned above, and linux-image-4.4.14-ti-r34 is the kernel used in <a href ="http://catch22eu.github.io/website/omnirobot/robot/">another project</a> mentioned on this site. Check beaglebone.org forum for more info as it's kind of a hit and miss what's working or not due to it's ongoing development. </p>
+<p>2) Some brief instructions how to make a bootable sd-card in Debian after downloading the preferred image. First decompress the downloaded image: </p>
+<code>
+ 	unxz bone-debian-8.6-lxqt-4gb-armhf-2016-11-06-4gb.img.xz
+ </code>
+ <p>Then copy the disk image to the micro-sd by the easiest method found so far:</p> 
+ <code>
+ 	sudo dd bs=4M if=bone-debian-8.6-lxqt-4gb-armhf-2016-11-06-4gb.img of=/dev/the_device you_found_with_lsblk && sync
+ </code>
+
+<p>3) It is also worth noting, that work is ongoing to be able to select either uio or remoteproc in uEnv.txt directly. It's unclear as for now if this will make the instruction on this page still applicable or not.</p>
+</div>
+
+
+
+        <div class="sidebar">
+          
+<img src="http://catch22eu.github.io/website/beaglebone/pru_uio.png" width="100%" height="100%" alt="Beaglebone PRU UIO Driver"/>
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22eu.github.io/website/">Catch22 Blog</a></li>
+	<li><a href="http://catch22eu.github.io/website/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22eu.github.io/website/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22eu.github.io/website/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22eu.github.io/website/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22eu.github.io/website/free" title="free internet">
+  <img src="https://catch22eu.github.io/website/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

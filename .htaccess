@@ -1,0 +1,4 @@
+Options -Indexes +ExecCGI
+AddHandler cgi-script .cgi .pl
+AddType text/html .html 
+AddHandler server-parsed .html

@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="Hello World example for Beaglebone shared memory in C." />
+  <meta name="keywords" content="beaglebone, PRU, shared, memory, c, ipc, hello, world, example, howto, guide, code, tutorial" />
+  <title>Beaglebone PRU Shared Memory in C</title>
+  <link rel="stylesheet" href="https://catch22eu.github.io/website/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Beaglebone PRU Shared Memory in C</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+  <h2>Welcome</h2>
+  <p>Below is the code which shows how to read and write integers between the host ARM to and from shared memory inside the PRU. Thanks to Texane (Fabien le Mentec) and Owen who shared their code.</p>
+  <p>Prerequisites are:</p>
+  <ul>
+  	<li>A Beaglebone of course</li>
+  	<li>The uio driver working, (see <a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">this post</a>)</li>
+  	<li>The c compiler from TI (which still can be found stand-alone on the TI website)</li>
+  	<li>And some other files: AM335x_PRU.cmd (pick the right one, see remark below), bin.cmd</li>
+  </ul>
+  <p>For convenience, a <a href="https://github.com/catch22eu/pru_shm_c/tree/master">git repository</a> has been created to download all code at once. This also enables further improvements by the community. </p>
+  </p>
+
+  <h3>PRU C Code</h3>
+  <p>The PRU code has now been updated with a much simpler code several times. Note the direct memory pointer, pointing to the first shared memory segment. See also <a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c/">this</a> page describing some of the essentials of using c code for programming the PRU. </p>
+
+    
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #BC7A00">#include &quot;pru_cfg.h&quot;</span>
+
+<span style="color: #BC7A00">#define PRU_SHARED_MEM_ADDR 0x00012000</span>
+
+<span style="color: #B00040">int</span> <span style="color: #0000FF">main</span>(<span style="color: #B00040">void</span>)
+{
+	<span style="color: #408080; font-style: italic">// direct pointer to memory address</span>
+	<span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">int</span><span style="color: #666666">*</span> shared_mem <span style="color: #666666">=</span> (<span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">int</span> <span style="color: #666666">*</span>) PRU_SHARED_MEM_ADDR;
+
+	<span style="color: #408080; font-style: italic">// enable OCP</span>
+	CT_CFG.SYSCFG_bit.STANDBY_INIT <span style="color: #666666">=</span> <span style="color: #666666">0</span>;
+
+	<span style="color: #008000; font-weight: bold">while</span>(shared_mem[<span style="color: #666666">0</span>]<span style="color: #666666">!=0xCAFEBABE</span>) {}
+
+	shared_mem[<span style="color: #666666">1</span>]<span style="color: #666666">=0xDEADBEEF</span>;
+
+	<span style="color: #008000; font-weight: bold">while</span>(<span style="color: #666666">1</span>) {}
+
+	__halt();
+
+	<span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
+}
+</pre></div>
+
+
+  <br>
+  <p>More brief explanation of what's going on in this code here could be at place. The PRU_SHARED_MEM_ADDR definition of 0x00012000 can be traced back to the pru reference manual, where it defines the start location of the shared memory segment. Next in the code, the volatile declaration of the shared_mem pointer is needed, as the memory content can be changed outside of what the code itself is doing. So in this case, the ARM host can update the memory, without the PRU knowing it. Depending on how compiler optimization is set (see the makefile below), it is possible the compiler optimizes the code to not poll the memory location over and over again, as it might think it useless to do when it did not change in the PRU code. The volatile keyword prevents these optimization errors. Next is the OCP enabling (see elsewhere), and further along in the code is the polling of the first memory location, and when it's condition is met, putting a value on the next memory location. </p>
+
+  <h3>Host C Code</h3>
+  <p>The host code makes use of the prussdrv or uio library to load the PRU code into memory, and also writes to values to shared memory, which is in return read by the PRU code. The code has also seen some changes in time, this is as of writing the latest version. Note the somewhat obscure 2048 offset, which is explained in the link in the code.</p>
+
+    
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #BC7A00">#include &lt;stdio.h&gt;</span>
+<span style="color: #BC7A00">#include &lt;stdint.h&gt;</span>
+<span style="color: #BC7A00">#include &lt;unistd.h&gt;</span>
+<span style="color: #BC7A00">#include &lt;stdlib.h&gt;</span>
+<span style="color: #BC7A00">#include &quot;prussdrv.h&quot;</span>
+<span style="color: #BC7A00">#include &quot;pruss_intc_mapping.h&quot;</span>
+
+<span style="color: #BC7A00">#define PRU_NUM 1			</span><span style="color: #408080; font-style: italic">// define which pru is used</span>
+<span style="color: #BC7A00">#define SHM_OFFSET 2048		</span><span style="color: #408080; font-style: italic">// http://www.embedded-things.com/bbb/understanding-bbb-pru-shared-memory-access/</span>
+
+<span style="color: #B00040">int</span> <span style="color: #0000FF">pru_init</span>(<span style="color: #B00040">void</span>)
+{
+	tpruss_intc_initdata pruss_intc_initdata <span style="color: #666666">=</span> PRUSS_INTC_INITDATA;
+	prussdrv_init();
+	<span style="color: #008000; font-weight: bold">if</span> (prussdrv_open(PRU_EVTOUT_0))
+	{
+		<span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">-1</span>;
+	}
+	<span style="color: #008000; font-weight: bold">else</span>
+	{
+		prussdrv_pruintc_init(<span style="color: #666666">&amp;</span>pruss_intc_initdata);
+		<span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
+	}
+}
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">pru_load</span>(<span style="color: #B00040">int</span> pru_num, <span style="color: #B00040">char</span><span style="color: #666666">*</span> datafile, <span style="color: #B00040">char</span><span style="color: #666666">*</span> codefile)
+{
+	<span style="color: #408080; font-style: italic">// load datafile in PRU memory</span>
+	prussdrv_load_datafile(pru_num, datafile);
+	<span style="color: #408080; font-style: italic">// load and execute codefile in PRU</span>
+	prussdrv_exec_program(pru_num, codefile);
+}
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">pru_stop</span>(<span style="color: #B00040">int</span> pru_num)
+{
+	prussdrv_pru_disable(pru_num);
+	prussdrv_exit();
+}
+
+<span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">int32_t</span><span style="color: #666666">*</span> <span style="color: #0000FF">init_prumem</span>()
+{
+	<span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">int32_t</span><span style="color: #666666">*</span> p;
+	prussdrv_map_prumem(PRUSS0_SHARED_DATARAM, (<span style="color: #B00040">void</span><span style="color: #666666">**</span>)<span style="color: #666666">&amp;</span>p);
+	<span style="color: #008000; font-weight: bold">return</span> p<span style="color: #666666">+</span>SHM_OFFSET;
+}
+
+<span style="color: #B00040">int</span> <span style="color: #0000FF">main</span>(<span style="color: #B00040">void</span>)
+{
+	<span style="color: #408080; font-style: italic">// initialize the PRU</span>
+	printf(<span style="color: #BA2121">&quot;pruss driver init (%i)</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121">&quot;</span>, pru_init());
+
+	<span style="color: #408080; font-style: italic">// load the PRU code (consisting of both code and data bin file).</span>
+	pru_load(PRU_NUM, <span style="color: #BA2121">&quot;pru_data.bin&quot;</span>, <span style="color: #BA2121">&quot;pru_code.bin&quot;</span>);
+
+	<span style="color: #408080; font-style: italic">// get the memory pointer to the shared data segment</span>
+	<span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">unsigned</span> <span style="color: #B00040">int</span><span style="color: #666666">*</span> pruDataMem <span style="color: #666666">=</span> init_prumem();
+
+	printf(<span style="color: #BA2121">&quot;sending CAFEBABE to PRU</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121">&quot;</span>);
+
+	<span style="color: #408080; font-style: italic">// write to shared data memory </span>
+	pruDataMem[<span style="color: #666666">0</span>]<span style="color: #666666">=0xCAFEBABE</span>;
+
+	sleep(<span style="color: #666666">1</span>);
+
+	<span style="color: #408080; font-style: italic">// read from shared data memory</span>
+	printf(<span style="color: #BA2121">&quot;PRU replies: %X</span><span style="color: #BB6622; font-weight: bold">\n</span><span style="color: #BA2121">&quot;</span>, pruDataMem[<span style="color: #666666">1</span>]);
+
+	pru_stop(PRU_NUM);
+
+	<span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
+}
+</pre></div>
+
+
+  <br>
+	<p>The pru_init and pru_load are fairly straightforward implementations which can be found on the TI site explaining the prussdrv driver. Note that the latter is a generic implementation of a PRU code and data loader. Please also beware of some other implementations where prussdrv_exec_program is modified in case the PRU code is not started at the beginning of PRU memory. This has to do with the absence of a specific instruction in the AM335x_PRU.cmd file, so please check or use the provided command file in the git code, which ensures the _c_int00 (or start of the code) starts at location 0x0. The init_prumem is the function which returns a pointer to the shared memory segment with the somewhat obscure offset of 2048. See the reference in the code for an explanation of this. Further up in the code, after initializing the PRU via the pru_init() function, loading the PRU code, also here the volatile declaration of the pointer variable pointing to the shared memory segment. The rest of the code should explain itself. </p>
+
+  <h3>Makefile</h3>
+  <p>The Makefile is also given here. Pay attention here how to name all the files and ensure all's there. </p>
+
+    
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #19177C">pru_options</span> 		<span style="color: #666666">=</span> --silicon_version<span style="color: #666666">=</span>2 --hardware_mac<span style="color: #666666">=</span>on -i/usr/include/arm-linux-gnueabihf/include -i/usr/include/arm-linux-gnueabihf/lib
+<span style="color: #19177C">pru_compiler</span> 		<span style="color: #666666">=</span> /usr/bin/clpru
+<span style="color: #19177C">pru_hex_converter</span> 	<span style="color: #666666">=</span> /usr/bin/hexpru
+
+<span style="color: #0000FF">all</span><span style="color: #666666">:</span> <span style="color: #666666">exports host</span>
+
+<span style="color: #0000FF">host</span><span style="color: #666666">:</span> <span style="color: #666666">pru_data.bin pru_code.bin host.c</span>
+	gcc -std<span style="color: #666666">=</span>gnu11 host.c -o host -lprussdrv -lrt
+
+<span style="color: #408080; font-style: italic">#</span>
+<span style="color: #408080; font-style: italic"># Here&#39;s the PRU code generation part</span>
+<span style="color: #408080; font-style: italic">#</span>
+
+<span style="color: #0000FF">exports</span><span style="color: #666666">:</span>
+	@export <span style="color: #19177C">PRU_SDK_DIR</span><span style="color: #666666">=</span>/usr
+	@export <span style="color: #19177C">PRU_CGT_DIR</span><span style="color: #666666">=</span>/usr/include/arm-linux-gnueabihf
+
+<span style="color: #0000FF">pru.obj</span><span style="color: #666666">:</span> <span style="color: #666666">pru.c</span>
+	<span style="color: #008000; font-weight: bold">$(</span>pru_compiler<span style="color: #008000; font-weight: bold">)</span> <span style="color: #008000; font-weight: bold">$(</span>pru_options<span style="color: #008000; font-weight: bold">)</span> --opt_level<span style="color: #666666">=</span>off -c pru.c
+	
+<span style="color: #0000FF">pru.elf</span><span style="color: #666666">:</span> <span style="color: #666666">pru.obj </span>
+	<span style="color: #008000; font-weight: bold">$(</span>pru_compiler<span style="color: #008000; font-weight: bold">)</span> <span style="color: #008000; font-weight: bold">$(</span>pru_options<span style="color: #008000; font-weight: bold">)</span> -z pru.obj -llibc.a -m pru.map -o pru.elf AM335x_PRU.cmd --quiet 
+
+<span style="color: #0000FF">pru_code.bin pru_data.bin</span><span style="color: #666666">:</span> <span style="color: #666666">bin.cmd pru.elf</span>
+	<span style="color: #008000; font-weight: bold">$(</span>pru_hex_converter<span style="color: #008000; font-weight: bold">)</span> bin.cmd ./pru.elf --quiet
+
+<span style="color: #0000FF">clean</span><span style="color: #666666">:</span>
+	rm pru.obj
+	rm pru.elf
+	rm pru.map
+</pre></div>
+
+
+  <br>
+
+  <h3>Feedback?</h3>
+  <p>Again, see the <a href="https://github.com/catch22eu/pru_shm_c/tree/master">git repository</a> to download all needed files and modify / branch if you have some improvements. Feel free to comment or give feedback on <a href="http://beagleboard.org/discuss?place=msg%2Fbeagleboard%2Fo6lBUisEAUA%2FAWh8sEugFQAJ">the beaglebone.org forum post</a> about this code. </p>
+
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22eu.github.io/website/">Catch22 Blog</a></li>
+	<li><a href="http://catch22eu.github.io/website/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22eu.github.io/website/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22eu.github.io/website/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22eu.github.io/website/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22eu.github.io/website/free" title="free internet">
+  <img src="https://catch22eu.github.io/website/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

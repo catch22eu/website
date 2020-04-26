@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9">
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+  <meta name="description" content="BareMetal Programming the STM32 Cortex M0 using GNU GCC">
+  <meta name="keywords" content="baremetal, gnu, gcc, open, source, example, tutorial, programming, mcu, stm32, stm32f0, stm32f051">
+  <title>STM32F0 BareMetal</title>
+  <link rel="stylesheet" href="https://catch22eu.github.io/website/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">BareMetal GCC: STM32 ARM Cortex M0</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/">Catch22 Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/stm32f0xxgnu">Programming STM32</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/lpc11xxgnu">Programming LPC11xx</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/openocd_sysfs_stm32">SWD STM32 OpenOCD</a></li>
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+<h2>Introduction</h2>
+<p>This web page guides in programming the STM32F0 ARM microprocessor series. The aim is to provide a compelling, easy to use method using an open source toolchain setup next to the commercially available products like Keil, mbed, etc. The setup can be summarized as making use of:</p>
+ <ul>
+  <li>STM32F0 (ARM Cortex M0) MCU (STM32F051 specifically), soldered on a breakout board</li>
+  <li>Debian based (e.g. also Ubuntu, Mint, Raspbian, etc).</li>
+  <li>GNU gcc standard compiler</li>
+  <li>For flashing: openocd with a Raspberry Pi as SWD JTAG adapter</li>
+  <li>Standard STM library STM32F0Cube</li> 
+</ul>
+<p>A note here on packaging and soldering: the STM32 MCU's are not available in DIP packages, but soldering Surface Mound Technology Devics (SMT's) is relatively easy. It's is worthwile to be able to solder SMT, wich opens up a wealth of other Integrated Circuits to be used in your projects. In oder to learn SMT soldering, there are plenty of tutorials on Youtube and elswhere on the internet explaining how to do it. A standard soldering iron, solder, and solder flux will do. To get started, it is worthwile to explore the different sizes in which MCU's can be ordered. The STM32F051 is available for instance in 48-pin LQFP48 package, which has a pitch of 0.5mm between the pins, but also the LQFP32 version with a pitch of 0.8mm and easier to begin with. There are also TSSOP20 MCU's like the STM32F030, which are dual in line with a pitch of 0.65mm. Below a picture of the MCU used in this example, soldered on a standard PCB </p>
+<img src="stm32baremetal.jpg" alt="STM32 MCU for baremetal programming" height="100%" width="100%"><br><br>
+
+<h2>Raspberry Pi as SWD JTAG Adapter</h2>
+<p>In this case, the Raspberry Pi Zero W (wireless) is used to program the MCU. This is an even more convenient and budget friendly method than using the FT232H used previously as a USB to UART modem, but for rerference, see <a href="http://catch22eu.github.io/website/baremetal/lpc11xxgnu/">this tutorial</a> on programming the LPC1114 using this modem. So how does this work? The Raspberry Pi's GPIO's can be used to send and receive the JTAG Servial Wire Debug signals to and from the STM32, using the openocd software package. The advantage here, is that next to being budget friendly (the Raspberry Pi Zero Wireless retails as low as $10), the Pi itself acts both as compiler / debugger, and interfaces directly to the STM32. This, opposed to using a USB to UART modem, which requires connecting to the model via USB (and additional issues with drivers). <b>All subsequent commands below are executed on the Raspberry Pi itself</b>, either remotely via ssh making use of the wireless connection for headless setups (e.g. using Raspbian Lite), or directly via keyboard/mouse/monitor connected to the Pi.</p>
+
+<h2>Setting up the GNU Toolchain</h2>
+
+<p>The set of programs used to compile and flash code to a microcontroller is named toolchain. As of writing, the standard GNU compiler toolchain can be used to compile source code into executable binaries. In order to obtain the toolchain it is cimply a matter of installing the correct package. On Debian, and Debian-based distributions like Ubuntu, Mint, Raspbian, etc, this can be done either via a package manager like Synaptic (which is a front-end for apt), or using apt directly on the command line:</p>
+<code>sudo apt-get install gcc-arm-none-eabi</code>
+<p>Some background here: a special version of the gcc compiler is required for compiling code for a target processor other than the host computer. This is called cross-compiling. That explains the gcc-arm version of the compiler. The “none” version is needed to indicate the use without an operating system (also known as baremetal programming). If we were to compile a program used for an OS, some parts of the program can / should make use of the OS provided functions, for instance when allocating and referencing memory. Without an OS, these standard function need to be linked and added to the binary you are compiling. 
+This will also install the other required packages like binutils and the c-library. </p>
+
+
+<p>Next to this, in order to flash your binary to the MCU, openocd will be installed:</p>
+<code>sudo apt-get install openocd</code>
+<p>There are some caveats on "older" Debian based versions of openocd, see <a href="http://catch22eu.github.io/website/baremetal/openocd_sysfs_stm32/">this extensive tutorial</a> about obtaining the correct version.</p>
+
+<h2>Acquire the STM32F0 libraries</h2>
+<p>The example used here, makes use of the open source libraries provided by STM for the selected MCU. These can be downloaded from the STM site directly, or by downloading the same library via the created <a href="https://github.com/catch22eu/STM32Cube_FW_F0">git repository</a>. The latter also requires the git package to be installed:</p>
+<code>sudo apt-get install git</code>
+<p>after which the STM32 library can be cloned:</p>
+<code>git clone https://github.com/catch22eu/STM32Cube_FW_F0</code>
+
+<h2>Connect the Raspberry Pi with the STM32</h2>
+<p>See the picture below on how to hook up the Raspberry Pi to the STM32:</p>
+<img src="http://catch22eu.github.io/website/baremetal/openocd_sysfs_stm32/raspbery_pi_openocd.jpg" alt="Wire diagram Raspberry Pi as SWD JTAG programmer for the STM32" height="100%" width="100%"><br>
+<p>On Raspberry Pi side, following pins are used:</p>
+<ul>
+	<li>Ground (any convenient ground pin)</li>
+	<li>3.3V pin (any of the two available 3.3V pins)</li>
+	<li>GPIO pin 23: nReset signal</li>
+	<li>GPIO pin 24: SWDIO signal</li>
+	<li>GPIO pin 25: SWCLK signal</li>
+</ul>
+<p>The STM32 (in this case the 32pin STM32F051) pins:</p>
+<ul>
+	<li>pin 16 and 32: Ground</li>
+	<li>pin 1, 5, 17: 3.3V (for both VDD pins and the VDDA pin)</li>
+	<li>pin 4: nReset signal</li>
+	<li>pin 23: SWDIO signal</li>
+	<li>pin 24: SWCLK signal</li>
+</ul>
+<p>This is a bare-minimum wiring diagram for this mcu (not making use of any decoupling capacitors, but seems to be working anyway). Refer to the STM32 Getting Started hardware Development guide for more details. Using a breadboard and some jumper wires, a practical setup in the end looks like this:</p>
+<img src="http://catch22eu.github.io/website/baremetal/openocd_sysfs_stm32/raspberry_as_programmer.jpg" alt="Wire diagram Raspberry Pi as SWD JTAG programmer for the STM32" height="100%" width="100%"><br><br>
+
+<h2>Hello World Example (Blink LED)</h2>
+<p>The <a href="https://github.com/catch22eu/STM32F051_BlinkLED">source code</a> of the example below can now also be installed on the Raspberry Pi (without changing directory) from the previous command:</p>
+<code>git clone https://github.com/catch22eu/STM32F051_BlinkLED</code>
+<p>Then cd into the downloaded directory:</p>
+<code>cd STM32F051_BlinkLED</code>
+<p>Relevant file is the main.c file here, which is compiled and downloaded onto the STM32 (and makes use of the STM32F0 Libraries downloaded earlier):</p>
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #BC7A00">#include &quot;stm32f0xx_hal.h&quot;</span>
+<span style="color: #BC7A00">#include &quot;stm32f0xx_hal_rcc.h&quot;</span>
+<span style="color: #BC7A00">#include &quot;stm32f0xx_hal_gpio.h&quot;</span>
+
+<span style="color: #BC7A00">#include &quot;stm32f0xx.h&quot;</span>
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">delay</span> (<span style="color: #B00040">int</span> a);
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">gpio_init</span>();
+
+<span style="color: #B00040">int</span> <span style="color: #0000FF">main</span>(<span style="color: #B00040">void</span>)
+{
+	<span style="color: #408080; font-style: italic">// Enable the GPIO AHB clock, and init GPIO</span>
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	gpio_init();
+
+    <span style="color: #008000; font-weight: bold">while</span> (<span style="color: #666666">1</span>)
+    {
+		HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_1);
+        delay(<span style="color: #666666">500000</span>);
+	}
+    <span style="color: #008000; font-weight: bold">return</span> <span style="color: #666666">0</span>;
+}
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">delay</span> (<span style="color: #B00040">int</span> a)
+{
+    <span style="color: #008000; font-weight: bold">volatile</span> <span style="color: #B00040">int</span> i,j;
+
+    <span style="color: #008000; font-weight: bold">for</span> (i<span style="color: #666666">=0</span> ; i <span style="color: #666666">&lt;</span> a ; i<span style="color: #666666">++</span>)
+    {
+        j<span style="color: #666666">++</span>;
+    }
+
+    <span style="color: #008000; font-weight: bold">return</span>;
+}
+
+<span style="color: #B00040">void</span> <span style="color: #0000FF">gpio_init</span>()
+{
+	GPIO_InitTypeDef GPIO_InitStruct;
+
+	GPIO_InitStruct.Pin <span style="color: #666666">=</span> GPIO_PIN_1;
+	GPIO_InitStruct.Mode <span style="color: #666666">=</span> GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull <span style="color: #666666">=</span> GPIO_PULLUP;
+	GPIO_InitStruct.Speed <span style="color: #666666">=</span> GPIO_SPEED_FREQ_MEDIUM;
+	HAL_GPIO_Init(GPIOB, <span style="color: #666666">&amp;</span>GPIO_InitStruct);
+}
+</pre></div>
+
+<p>Note that apart from the main.c file, this also provides other files needed. One of them is the makefile itself, which contains all commands to compile and link with references to the needed libraries. An other important file is the linker script, and the openocd.cfg file.</p>
+<p>Run the make command as root to compile and upload the exmaple code to the STM32. Root is required for the openocd upload to work: </p>
+<code>sudo make</code>
+<p>A blinking LED together with a suitable resistor between GPIO PB1 and ground (pin15  and 16 on the LQFP32 version) should now show all succeeded. </p>
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/">Catch22 Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/stm32f0xxgnu">Programming STM32</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/lpc11xxgnu">Programming LPC11xx</a></li>
+  <li><a href="http://catch22eu.github.io/website/baremetal/openocd_sysfs_stm32">SWD STM32 OpenOCD</a></li>
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22eu.github.io/website/">Catch22 Blog</a></li>
+	<li><a href="http://catch22eu.github.io/website/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22eu.github.io/website/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22eu.github.io/website/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22eu.github.io/website/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22eu.github.io/website/free" title="free internet">
+  <img src="https://catch22eu.github.io/website/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

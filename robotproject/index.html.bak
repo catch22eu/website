@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+
+  <title>How to Design, Build, and Program a Robot</title>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="description" content="Website about building an autonomous walking robot. It covers the robot design, building, and programming." />
+  <meta name="keywords" content="robot, simple, building, design, leg, walking, servo, autonomous, hexapod" />
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+
+  <body>
+    <div class="pagewidth">
+      
+    <div class="header">
+      <!-- TITLE -->
+
+      <h1><a href="#">Pivot, the Autonomous Walking Robot</a></h1>
+
+      <h2>Design, Building and Programming</h2><!-- END TITLE -->
+    </div>
+
+
+      <div class="nav">
+          
+<ul>
+   <li><a href="http://catch22.eu/robotproject/">Home</a></li>
+   <li><a href="http://catch22.eu/robotproject/design/">Design</a></li>
+   <li><a href="http://catch22.eu/robotproject/building/">Building</a></li>
+   <li><a href="http://catch22.eu/robotproject/programming/">Programming</a></li>
+   <li><a href="http://catch22.eu/robotproject/movies/" rel="nofollow">Movies</a></li>
+   <li><a href="http://catch22.eu/robotproject/links/">Links</a></li>
+</ul>
+
+
+      </div>
+      <div class="page-wrap">
+        
+      <div class="content">
+        <!-- CONTENT -->
+
+        <h2>How to Design, Build and Program a Robot</h2>This robot
+        project describes another approach to the common hexapod robot
+        design. The project is divided in easy steps to explain the
+        robot building process from a builder&#39;s perspective. The
+        project starts by investigating the types of walking robots
+        found on the Internet, and giving an overview of the available
+        robot parts. The investigation results in a <a href=
+        "http://catch22.eu/robotproject/design/">simple robot
+        design</a> using r/c servos controlled by a programmable micro
+        controller. Next, <a href=
+        "http://catch22.eu/robotproject/building/">robot building</a>
+        is explained by describing the tools needed and the way to use
+        them. Finally, <a href=
+        "http://catch22.eu/robotproject/programming/">robot
+        programming</a> is described, which makes the robot walk around
+        autonomously.<br />
+        <br />
+        <a href="http://catch22.eu/robotproject/design/"><img style=
+        "width: 575px; height: 338px;" border="0" alt=
+        "Simple Robot Design" src="frontup.jpg" /></a><br />
+        <br />
+        <br />
+        <!-- END CONTENT -->
+      </div>
+
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+   <li><a href="http://catch22.eu/robotproject/">Home</a></li>
+   <li><a href="http://catch22.eu/robotproject/design/">Design</a></li>
+   <li><a href="http://catch22.eu/robotproject/building/">Building</a></li>
+   <li><a href="http://catch22.eu/robotproject/programming/">Programming</a></li>
+   <li><a href="http://catch22.eu/robotproject/movies/" rel="nofollow">Movies</a></li>
+   <li><a href="http://catch22.eu/robotproject/links/">Links</a></li>
+</ul>
+
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+<div class="sidebar">
+  <h4>Links</h4>
+  <?php include 'otherlinks.php'; ?>  
+</div>

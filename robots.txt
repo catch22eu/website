@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /omnirobot/beaglebone-pru-ipc/
+Disallow: /omnirobot/beaglebone-pru-c/

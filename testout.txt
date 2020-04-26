@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  TEST
+  <body>
+    <div class="pagewidth">
+      TEST
+      <div class="nav">
+         TEST 
+      </div>
+      <div class="page-wrap">
+        TEST
+        <div class="sidebar">
+          TEST
+          <h4>Related</h4>
+          TEST
+          <h4>Other</h4>
+          TEST
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      TEST
+    </div>
+  </body>
+</html>

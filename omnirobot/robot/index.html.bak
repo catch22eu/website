@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="An omni directional robot project" />
+  <meta name="keywords" content="robot, omni, wheels, beaglebone, PRU, howto, guide, code, tutorial, assembly" />
+  <title>Omni Directional Robot</title>
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Omni Robot</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22.eu/omnirobot/">Robot Home</a></li>
+  <li><a href="http://catch22.eu/omnirobot/robot">The Omnirobot</a></li>
+  <li><a href="http://catch22.eu/beaglebone/beaglebone-pru-ipc">IPC with PRU</a></li>
+  <li><a href="http://catch22.eu/beaglebone/beaglebone-pru-c">PRU in C</a></li>
+  <li><a href="http://catch22.eu/japanrobotstores">Japan Robot Stores</a></li>
+  <li><a href="http://catch22.eu/robotproject">Pivot Robot</a></li>   
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+	<h2>Introduction</h2>
+	<p>This is my new project to build an autonomous omnidirectional robot. Main component Specs:</p>
+	<ul>
+		<li>A Beaglebone Green (wireless)</li>
+		<li>3 Omni Wheels</li>
+		<li>3 NEMA 14 Stepper Motors</li>
+		<li>3 Pololu DRV8834 Stepper Drivers</li>
+		<li>HC-SR04 Ultrasonic Rangefinders</li>
+		<li>6600mAh LiPo Battery</li>
+	</ul>
+	<h2>First Prototype</h2>
+	<p>Quite some time has been spent not so much on building the first robot, but sepecially to get the software up and running. Especially an issue with the stepper drivers used at first (see <a href="http://catch22.eu/omnirobot/drv8824/">this</a> link), and getting started with the <a href="http://catch22.eu/omnirobot/beaglebone-pru-c/">Beaglebone Programmable Real Time Units in C</a>.</p> 
+	<img src="omnirobot_v0.jpg" width="100%" height="100%">
+	<p>Below a picture of the first prototype. </p>
+	<h2>Improved Version</h2>
+	<p>Working on a new version with 3d printed parts.</p>
+	<img src="3dprintedbase.jpg" width="100%" height="100%">
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22.eu/omnirobot/">Robot Home</a></li>
+  <li><a href="http://catch22.eu/omnirobot/robot">The Omnirobot</a></li>
+  <li><a href="http://catch22.eu/beaglebone/beaglebone-pru-ipc">IPC with PRU</a></li>
+  <li><a href="http://catch22.eu/beaglebone/beaglebone-pru-c">PRU in C</a></li>
+  <li><a href="http://catch22.eu/japanrobotstores">Japan Robot Stores</a></li>
+  <li><a href="http://catch22.eu/robotproject">Pivot Robot</a></li>   
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

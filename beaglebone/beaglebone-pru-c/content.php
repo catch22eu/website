@@ -1,0 +1,159 @@
+<div class="content">
+  <h2>Introduction</h2>
+<p>The Beaglebone makes use of the Texas Instruments Sitarra AM335x processor, which is in that sense unique compared to other Single Board Computers in that this processor has next to the main ARM CPU, two additional CPU’s called PRU (Programmable Realtime Units). This architecture accommodates both running a mainline Operating System (thus far the standard is Debian Linux), and use two smaller processors to perform fast, real-time operations. For some this is considered as the sweet spot between Raspberry Pi, which is the popular platform running on a Linux OS (but less capable of doing real-time tasks), and the Arduino (which is great for real-time, but a compromise for connectivity or complexity). The Beaglebone has both advantages of running a modern OS with possibility to interconnect like a computer, but also perform real time operations. The main CPU and PRU's are interconnected with each other with a data bus to communicate and/or share data with each other. Both systems (the main CPU and the PRU’s) can perform GPIO operations as well, allowing for very fast input/output operations. Programming of the PRU cores was first possible by provision of a freely distributed assembler, but later on also by a C/C++ compiler which made programming the real time units more accessible for programmers not familiar with using assembly language. Still, the Beaglebone has a steep learning curve which is hampered by less accessible (and sometimes lacking) documentation, but also by ever changing architecture (like the changes to remoteproc or device tree overlays). This is an attempt to help de-steepen the Beaglebone PRU learning curve, by giving more insight how to write your code in C instead of assembly language.</p>
+
+  <h2>Some Seemingly Random Notes</h2>
+<p>There’s two ways to upload code to the PRU’s and communicate between the host CPU and the PRU’s. Originally, the uio_pruss driver was used, but later succeeded by the remoteproc driver. The latter currently only supported by TI, the former still used by the community. There’s another web page how to use the older uio_pruss driver on newer kernels. </p>
+
+<p>Reference to the <a href="https://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master">PRU Software Support Package:</a></p>
+
+<h2>Basic PRU Understanding</h2>
+<p>There’s two aspects of programming the PRU which in the end turn out to be very easy once understood:</p>
+ <ul>
+  	<li>Register access, see next section. </li>
+  	<li>R30/R31 registers (see the Blink LED example further below)</li>
+
+  </ul>
+ 
+<h2>Direct Register Access</h2>
+<p>As an example, let's compare three methods of enabling the IEP timer module in the PRU with an increment value of 1 (meaning, the timer is incremented by 1 each clock cycle). This is done by setting the counter enable bit "CNT_ENABLE" of the GLOBAL_CFG_REGISTER and defining the increment value "DEFAULT_INC" of the same register. Refer to the <a href="https://github.com/beagleboard/am335x_pru_package/raw/master/am335xPruReferenceGuide.pdf">AM335x PRU ICSS Reference Guide</a> about these register values. Each register is directly addressable as a memory segment, given by the Local Data Memory Map in the Reference Manual. This shows the IEP timer starts at address 0x0002_E000. The memory offset of the GLOBAL_CFG register is 0h (so no offset). Bit 0 of this register enables the counter, and bit 8-11 set the increment value. See also here the AM335x PRU ICSS Reference Guide. In the end, writing 0x11 in Hex to address 0x0002E000 achieves what we want.</p>
+<p>The bare-bone assembly way of doing this is using a common register (r1 in this case) and a specific command defined by the PRU assembler to copy this register content to the actual the required register:</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">mov  r1, <span style="color: #005588; font-weight: bold">0x0011</span>
+sbco r1, C26, <span style="color: #005588; font-weight: bold">0x0</span>, <span style="color: #0000DD; font-weight: bold">2</span>
+</pre></div><br>
+<p>See <a href="http://processors.wiki.ti.com/index.php/PRU_Assembly_Instructions">this page</a> for an explanation. In brief, this puts the required value 0x11 mentioned earlier in register r1 in the first line, then using the second line with an sbco instruction to copy 2 bytes of register r1 into the register defined by the constant C26, with offset 0x0. The C26  constant is one of the semi hard-coded values into the PRU. It’s a maybe somewhat obscure way to reference a plain memory location. In plain C, this can be done by a single line showing directly what is going on:</p>
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">(<span style="color: #333333">*</span>(<span style="color: #008800; font-weight: bold">volatile</span> <span style="color: #333399; font-weight: bold">unsigned</span> <span style="color: #333399; font-weight: bold">int</span> <span style="color: #333333">*</span>) <span style="color: #005588; font-weight: bold">0x0002E000</span> ) <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x0011</span>;
+</pre></div><br>
+<p>A more advanced way of doing this, is using the PRU Software Support Packages header files:</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #557799">#include &lt;pru_iep.h&gt;</span>
+...
+CT_IEP.TMR_GLB_CFG <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x11</span>;
+</pre></div><br>
+<p>Note that here the header file <a href="https://git.ti.com/pru-software-support-package/pru-software-support-package/blobs/master/include/am335x/pru_iep.h">pru_iep.h</a> is used, which enables reading and writing to a structure variable. See the next section how this actually is achieved.</p>
+
+<h2>How does the C code work "under the hood"?</h2>
+<p>The PRU C Compiler adds non-standard C "type attributes" to read/write directly to PRU registers. The PRU C/C++ Compiler user guide syntax definition is:</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #333399; font-weight: bold">int</span> x <span style="color: #0066BB; font-weight: bold">__attribute__</span>((cregister(<span style="background-color: #fff0f0">&quot;MEM&quot;</span>, [near<span style="color: #333333">|</span>far]), peripheral));
+</pre></div><br>
+<p>These definitions can be found in the include header files (like pru_iep.h mentioned above):</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">volatile</span> __far pruIep CT_IEP <span style="color: #0066BB; font-weight: bold">__attribute__</span>((cregister(<span style="background-color: #fff0f0">&quot;PRU_IEP&quot;</span>, far), peripheral));
+</pre></div><br>
+<p>Note the “CT_IEP” definition, which, again, corresponds to the example above. Here, it can also be seen that the "MEM" resister used is "PRU_IEP", and is the name that corresponds to one of the definitions in the linker command file (typically named AM335x_PRU.cmd). The linker command file is also given in the PRU Software Support Package Examples, like <a href="https://git.ti.com/pru-software-support-package/pru-software-support-package/blobs/master/examples/am335x/PRU_IEP/AM335x_PRU.cmd">this one</a>. In this file, the IEP registers is defined as:</P>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">PRU_IEP	<span style="color: #333333">:</span> org <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x0002E000</span> len <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x0000031C</span>	CREGISTER<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">26</span>
+</pre></div><br>
+<p>This exactly matches the base register address of the IEP (in the PRU ICSS Reference Guide, being 0x0002_E000). So in the end this explains the “CT_IEP” part of the instruction. </p>
+
+<p>The complete list of <a href="https://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master/include/am335x">available header files</a> is:<br>
+pru_cfg.h<br>
+pru_ctrl.h<br>
+pru_ecap.h<br>
+pru_iep.h<br>
+pru_intc.h<br>
+pru_uart.h<br>
+sys_mailbox.h<br>
+sys_mcspi.h<br>
+sys_pwmss.h<br>
+</p>
+
+<p>The header files and the reference manual closely match each other. For instance, here’s a relevant section of the pru_iep.h header file for the IEP example above:</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-style: italic">/* PRU_IEP_TMR_GLB_CFG register bit field */</span>
+<span style="color: #000080; font-weight: bold">union</span> {
+	<span style="color: #000080; font-weight: bold">volatile</span> <span style="color: #000080; font-weight: bold">uint32_t</span> TMR_GLB_CFG;
+	<span style="color: #000080; font-weight: bold">volatile</span> <span style="color: #000080; font-weight: bold">struct</span> {
+		<span style="color: #000080; font-weight: bold">unsigned</span> CNT_EN : <span style="color: #0000FF">1</span>;		<span style="color: #008800; font-style: italic">// 0</span>
+		<span style="color: #000080; font-weight: bold">unsigned</span> rsvd1 : <span style="color: #0000FF">3</span>;		<span style="color: #008800; font-style: italic">// 3:1</span>
+		<span style="color: #000080; font-weight: bold">unsigned</span> DEFAULT_INC : <span style="color: #0000FF">4</span>;	<span style="color: #008800; font-style: italic">// 7:4</span>
+		<span style="color: #000080; font-weight: bold">unsigned</span> CMP_INC : <span style="color: #0000FF">12</span>;		<span style="color: #008800; font-style: italic">// 19:8</span>
+		<span style="color: #000080; font-weight: bold">unsigned</span> rsvd12 : <span style="color: #0000FF">12</span>;		<span style="color: #008800; font-style: italic">// 31:20</span>
+	} TMR_GLB_CFG_bit;
+};	<span style="color: #008800; font-style: italic">// 0x0</span>
+</pre></div><br>
+<p>And here is the section in the reference manual explaining the register content:<br><br><img src="iep.png" height="90%" width="90%">
+<br>After some comparison, of the two, we can conclude these are exactly the same. </p>
+
+<p>Another Example is the commonly used initialization for the PRU’s, which will be used in the blink LED example below.</p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">CT_CFG.SYSCFG_bit.STANDBY_INIT = <span style="color: #0000FF">0</span>;
+</pre></div>
+<p>This enables the OCP Master Ports. It's equivalent to the bit-clearing assembly instruction combination found often: </p>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">LBCO &amp;r0, C4, <span style="color: #0000FF">4</span>, <span style="color: #0000FF">4</span>
+CLR r0, r0, <span style="color: #0000FF">4</span>
+SBCO &amp;r0, C4, <span style="color: #0000FF">4</span>, <span style="color: #0000FF">4</span>
+</pre></div><br>
+
+<h2>The C PRU Blink Led Example (Hello World)</h2>
+<p>So here it is, the PRU C Hello World (Blink a LED) in plain C.</p>
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #557799">#include &lt;stdint.h&gt;                                     </span><span style="color: #888888">// needed for pru_iep.h</span>
+<span style="color: #557799">#include &quot;pru_cfg.h&quot;                                    </span><span style="color: #888888">// needed to initialize OCP</span>
+<span style="color: #557799">#include &quot;pru_iep.h&quot;                                    </span><span style="color: #888888">// needed for pru IEP counter</span>
+
+<span style="color: #888888">// See http://elinux.org/Ti_AM33XX_PRUSSv2: P9_25 is set by __R30 bit 7</span>
+<span style="color: #557799">#define R30_out_bit 7</span>
+
+<span style="color: #888888">// Clock cycles to wait (note: PRU&#39;s run at 200MHz, so 100M equals 0.5s)</span>
+<span style="color: #557799">#define wait 100000000</span>
+
+<span style="color: #888888">// The PRU registers __R30 and __R31 for GPIO (__R30 used here switch the LED on / off)</span>
+<span style="color: #008800; font-weight: bold">volatile</span> <span style="color: #008800; font-weight: bold">register</span> <span style="color: #333399; font-weight: bold">unsigned</span> <span style="color: #333399; font-weight: bold">int</span> __R30;
+<span style="color: #008800; font-weight: bold">volatile</span> <span style="color: #008800; font-weight: bold">register</span> <span style="color: #333399; font-weight: bold">unsigned</span> <span style="color: #333399; font-weight: bold">int</span> __R31;
+
+<span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">led_output</span>( <span style="color: #333399; font-weight: bold">char</span> high )
+{
+    <span style="color: #008800; font-weight: bold">if</span> (high)
+                __R30 <span style="color: #333333">|=</span> (<span style="color: #0000DD; font-weight: bold">1</span> <span style="color: #333333">&lt;&lt;</span> R30_out_bit );
+    <span style="color: #008800; font-weight: bold">else</span>
+                __R30 <span style="color: #333333">&amp;=</span> <span style="color: #333333">~</span>(<span style="color: #0000DD; font-weight: bold">1</span> <span style="color: #333333">&lt;&lt;</span> R30_out_bit );
+}
+
+<span style="color: #333399; font-weight: bold">void</span> <span style="color: #0066BB; font-weight: bold">reset_iep</span>(<span style="color: #333399; font-weight: bold">void</span>)
+{
+        <span style="color: #888888">// Set counter to 0</span>
+        CT_IEP.TMR_CNT <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x0</span>;
+        <span style="color: #888888">// Enable counter</span>
+        CT_IEP.TMR_GLB_CFG <span style="color: #333333">=</span> <span style="color: #005588; font-weight: bold">0x11</span>;
+}
+
+<span style="color: #333399; font-weight: bold">int</span> <span style="color: #0066BB; font-weight: bold">read_iep</span>(<span style="color: #333399; font-weight: bold">void</span>)
+{
+        <span style="color: #888888">// Return counter content</span>
+        <span style="color: #008800; font-weight: bold">return</span> CT_IEP.TMR_CNT;
+}
+
+<span style="color: #333399; font-weight: bold">int</span> <span style="color: #0066BB; font-weight: bold">main</span>(<span style="color: #333399; font-weight: bold">void</span>)
+{
+        <span style="color: #888888">// Initialize OCP (formerly known as ocp_init() in assembly</span>
+        CT_CFG.SYSCFG_bit.STANDBY_INIT <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>;
+
+        <span style="color: #888888">// variables can not be declared in for loops</span>
+        <span style="color: #333399; font-weight: bold">int</span> i;
+
+        <span style="color: #888888">// loop a defined amount</span>
+        <span style="color: #008800; font-weight: bold">for</span> ( i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> <span style="color: #0000DD; font-weight: bold">5</span> ; i<span style="color: #333333">++</span>)
+        {
+                <span style="color: #888888">// reset the IEP clock</span>
+                reset_iep();
+
+                <span style="color: #888888">// wait by polling the IEP counter, then switch LED on</span>
+                <span style="color: #008800; font-weight: bold">while</span> (read_iep()<span style="color: #333333">&lt;</span>wait) {}
+                led_output(<span style="color: #0000DD; font-weight: bold">1</span>);
+
+                <span style="color: #888888">// another wait method, then switch LED off</span>
+                __delay_cycles(wait);
+                led_output(<span style="color: #0000DD; font-weight: bold">0</span>);
+        }
+
+        __halt();
+
+        <span style="color: #008800; font-weight: bold">return</span> <span style="color: #0000DD; font-weight: bold">0</span>;
+}
+</pre></div>
+
+
+
+<p>Most is explained in the previous paragraphs. New is the introduction of the __R30 register variable, which is a specific reference to something the TI compiler understands, and is used to output to GPIO pins (opposed to __R31, which is used to read input pins).<br> To get this code to run successfully can be tricky, as it relies on the assumption this is already a skill mastered. To help though, here are some brief hints and tips. As explained, the code includes the header files mentioned, and the AM335x_PRU.cmd memory configureation file. The device tree overlay need to be set correctly, pin P9_25 is used here, and needs to be configures as output mode 5. Beware of course to use a resisor in series with the LED to not damage your board. I'm using uio prussdrv to load code in the PRU's by a separate c program. This is the former way of doing it, as recently remoteproc is used. For uio to work on newer Beaglebone releases, the dts board file needs to be edited to enable uio, and disable remoteproc, see <a href="http://catch22.eu/beaglebone/beaglebone-pru-uio/">this instruction</a>. I think remoteproc can also be used though, and may be an easier, better supported way. For further help on getting code to run on the PRUss in general, please check resources on <a href="http://beagleboard.org/discuss">Beaglebone.org forum</a>, and elsewhere.</p>
+
+<p>Regarding this post on coding the PRU in C, feel free to comment on the special post about this <a href="http://beagleboard.org/discuss?place=msg%2Fbeagleboard%2F3KjD7ULjD6M%2FTjTtgfDOBQAJ">here</a> on Beaglebord.org Forum!</p>
+
+
+</div>

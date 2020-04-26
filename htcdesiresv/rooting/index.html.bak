@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="HTC Desire SV Smartphone rooting guide. How to unlock the bootloader, install ClockWorkMod (CWM) Recovery, and install SuperSU.)" />
+  <meta name="keywords" content="HTC, Desire, SV, rooting, guide, brick, CWM, unlock, bootloader, android, dual, SIM, smartphone" />
+  <title>HTC Desire SV Rooting Guide</title>
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">HTC Desire SV</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li class="selected"><a href="http://catch22.eu/">Home</a></li>
+  <li><a href="http://catch22.eu/htcdesiresv/review/">Review</a></li>
+  <li><a href="http://catch22.eu/htcdesiresv/rooting/">Rooting</a></li>
+</ul>
+
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+
+
+  <h2>How to Root the HTC Desire SV</h2>
+  <p>Rooting the HTC Desire SV boils down to 3 basic steps:</p>
+  <ul>
+  	<li>Unlocking the bootloader. HTC officially Supports unlocking the bootloader, see <a href="http://www.htcdev.com/" > htcdev.com </a>. This allows to boot other images on the phone. </li>
+  	<li>Booting a Recovery ROM from the phone. For the Desire SV, this is done with ClockWorkMod (CWM) Recovery. This is needed to be able to flash unofficial updates to the phone. </li>
+  	<li>Installation of SuperSU via CWM Recovery. This is the actual step of rooting the phone by installing the SU application which allows swithing to the root user which has full read and write permissions on all directories and files on the phone. </li>
+  </ul>
+  
+  
+  <h3>Unlock the Bootloader</h3>
+  <p>The procedure described at htcdev.com is quite cumbersome as the most steps describe the extraction of the 3 files needed to actually unlock the bootloader (adb.exe, AdbwinApi.dll and fastboot.exe), while the unlocking part basically consists of 3 steps:
+  <ul>
+   <li>Booting the Desire SV in bootloader mode and connecting it to the pc;</li>
+   <li>Extracting the phone's key and sending it to HTC in order to receive the unlock code;</li>
+   <li>Unlocking the bootloader with the unlock code.</li>
+  </ul>
+  These last three steps only take 5 minutes or so. Beware that all user data and settings are deleted during the process. As said, see <a href="http://www.htcdev.com/" > htcdev.com </a> for the complete procedure.  
+ </p>
+
+
+  <h3>Obtain CWM Recovery</h3>
+  <p>ClockWorkMod Recovery is needed for rooting the HTC Desire SV. Some recovery images found on the internet may have the can&apos;t mount cache errors, which is caused by an incorrect recovery.fstab file. Also, a screen offset issue can be present in these images as well. Download this recovery image directly from Catch22.eu. Unzip the file to retrieve the recovery image. 
+   <code>Download: <a href="http://catch22.eu/htcdesiresv/rooting/recovery-cm_magnids-eng-ics-0.9.img.zip">recovery-cm_magnids-eng-ics-0.9.img.zip</a></code> For comments on this, please use <a href="http://forum.xda-developers.com/showthread.php?t=2487211">this thread</a> on xda-developers.com. A link to the source files can be found there as well. </p>
+
+
+  <h3>Fastboot CWM Recovery</h3>
+  <p>It is possible with the HTC Desire SV to use fastboot once the bootloader is unlocked as mentioned above. Fastboot allows to directly load an image from the PC via USB to the phone&apos;s memory and boot into it. This leaves the phone's operating system unchanged and makes it possible to make a backup of the phone&apos;s original firmware.</p>
+<img src="http://catch22.eu/htcdesiresv/rooting/hboot.png" width="600" height="438" alt="hboot menu" />
+  <i>The hboot menu. On the left the startup screen with the fastboot option selected, on the right the fastboot screen.</i>
+<br><br>
+
+  <p>As explained in the previous paragraph, several recovery images and steps were used to ensure images were obtained from known (open source) sources.</p>
+
+  <ul>
+  	<li>Put the phone in fastboot mode by turning on the phone with Power + Volume Down pressed simultaniously, and selecting the fastboot option in the HBOOT menu (see picture above). When the Desire SV is connected to the PC via USB, the fastboot command is used to boot a custom recovery image on the phone:</li>
+  	<li>For downloading (but not flashing) and booting a CWM recovery image, use the command <code> fastboot boot recovery.img</code> This way a backup of the stock recovery image can be saved to the SD card via the CWM recovery backup option. With an incorrect recovery image (with the can&apos;t mount cache issue), it is not possible to install superuser.zip with a non-flashed CWM recovery.</li>
+  	<li>For flashing and booting the recovery image, use the command <code> fastboot flash recovery recovery.img</code> This is needed to flash superuser.zip via CWM Recovery. Beware that the stock HTC recovery image is overwritten this way. The previous method is recommended though.</li>
+  </ul>
+
+  <p>Note 1: Power + Volume Down to reach the HBOOT menu does not work when the "fast boot" option in settings/power is switched on.<br>
+  Note 2: A more elegant way to boot your phone into HBOOT, is by using adb: adb reboot bootloader.<br>
+  Note 3: ADB and Fastboot don't show devices? Check in Windows XP if the HTC USB driver has an issue and a restart if the driver is needed.<br>
+  Note 4: When using VirtualBox, ensure the USB device "htc, Inc Android 1.0 [0100]" is switched on in Virtualbox, and that USB 2.0 (EHCI) Controller is enabled in the settings menu.</p>
+
+
+  <h3>Download and Flash ClockWorkMod SuperUser</h3>
+  <p>Gaining root access is done by installing SuperUser on your phone. SuperUser actually consists of two parts: </p>
+  <ul>
+  	<li>The SuperUser App (superuser.apk), which is the User Interface.</li>
+  	<li>The su binary, which is the low-level Android program that controlls root acces rights. </li>
+  </ul>
+  <p>SuperUser by ClockWorkMod is available in Google Play Store, but this requires a rooted phone already. The description in the Play Store also contains a link to the manual installation file which is needed to install su for un-rooted devices: <a href="http://download.clockworkmod.com/superuser/superuser.zip" > http://download.clockworkmod.com/superuser/superuser.zip </a>. <br>
+The superuser.zip file contains both the APK and su binaries for x86 and ARM processors. This file should be downloaded to the root of the SD card in order to flash it with CWM recovery. When the phone is booted in recovery mode, use the menu option <code>install zip via sd card</code> and select the superuser.zip file to flash it to the system partition. The operation was successfull when the phone is booted again, and the superuser app does not show a message about an incorrect superuser binary.<br>
+</p>
+<blockquote><p>At Catch22.eu root access was gained to the HTC Desire SV successfully this way. Note that the method outlined here does use open source as much as possible. The method also backups the original recovery image. Some words on s-on and s-off: this is not required, the phone at Catch22.eu had s-on during rooting. For a good understanding of s-on, see 
+<a href="https://plus.google.com/103583939320326217147/posts/P1i8qzLfkTm">this explanation</a> from Koushik himself. Beware that the s-on state of the phone does not give permanent root, meaning that a HTC firmware update will undo the root rights, and the superuser.zip file needs to be flashed again.</p></blockquote>
+
+  <h3>Next steps after gaining root access</h3>
+  <p>After gaining root access to the Desire SV, some recommended steps how to continue from here: </p>
+  <ul>
+  	<li>Control which apps may be started at boot with a startup task manager.</li>
+  	<li>Install custom ROM's via a ROM manager. </li>
+        <li>Protect your privacy by hiding contacts from programs that don&apos;t require this to operate</li>
+        <li>And much more...</li>
+  </ul>
+
+  <h3>Unrooting</h3>
+  <p>Just in case this is needed, here's a few steps how to un-root your phone. This obviously works only when your phone is rooted. Use adb to open a shell to your phone (phone is in normal operation): 
+  <code>adb shell</code>  
+  Then switch to superuser: 
+  <code>su</code>  
+  Because the /system is mounted in read-only mode, remount it rw (this code is for the HTC Desire SV only): 
+  <code>mount -o rw,remount -t ext4 /dev/block/mmcblk0p25 /system</code>
+  The Superuser app and su binary can be removed with:
+  <code>rm /system/app/Superuser.apk<br>rm /system/bin/su</code>
+  It's immediately visible the app is gone from your screen by now. Exit by entering exit twice:
+  <code>exit<br>exit</code>  
+  </p> 
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li class="selected"><a href="http://catch22.eu/">Home</a></li>
+  <li><a href="http://catch22.eu/htcdesiresv/review/">Review</a></li>
+  <li><a href="http://catch22.eu/htcdesiresv/rooting/">Rooting</a></li>
+</ul>
+
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

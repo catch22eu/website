@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="Tech blog featuring robotics, 3d printing and more." />
+  <meta name="keywords" content="3d, printing, scale, modelling, airbrush, robot, beaglebone, arm, barmetal, espresso, raspberry" />
+  <meta name=”robots” content=”noindex”>
+  <title>Catch22.eu Website</title>
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Blog</a></h1>
+  <h2>Catch22.eu</h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22.eu/japanrobotstores/">Japan Robot Stores</a></li>
+  <li><a href="http://catch22.eu/omnirobot/">Omni Robot</a></li>
+  <li><a href="http://catch22.eu/robotproject/">Pivot Robot</a></li>
+  <li><a href="http://catch22.eu/beaglebone/">Beaglebone Programming</a></li>
+  <li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+  <h2>Welcome</h2>
+  <p>Welcome to Catch22.eu, up and running since August 2012.</p>
+
+	
+<h3>Serial Wire Debug the STM32 with Raspberry or Beaglebone</h3>
+<a href="http://catch22.eu/baremetal/openocd_sysfs_stm32/"><img src="http://catch22.eu/baremetal/openocd_sysfs_stm32/raspbery_pi_openocd.jpg" alt="Raspberry Pi as Serial Wire Debugger" height="100%" width="100%"></a>
+<p>This tutorial shows how to <a href="http://catch22.eu/baremetal/openocd_sysfs_stm32/">use the Raspberry Pi</a> for debugging and flashing a STM32 mcu via the SWD interface.</p>
+
+
+
+	
+<h3>Fixing a leaking Ascaso Uno espresso Machine Boiler</h3>
+<a href="http://catch22.eu/ascaso_uno/uno_leaking"><img src="http://catch22.eu/ascaso_uno/uno_leaking/ascaso_uno_pro_pid_steel_front_view.jpg" alt="Ascaso Uno Leaking Boiler" height="100%" width="100%"></a>
+<p><a href="http://catch22.eu/ascaso_uno/uno_leaking">Here</a> you can find the steps to repair a leaking sealing of the boiler heating element and fittings of an Ascaso Uno espresso machine.</p>
+
+
+
+	
+<h3>Ascaso Uno Wiring Diagram</h3>
+<a href="http://catch22.eu/ascaso_uno/uno_wiring"><img src="http://catch22.eu/ascaso_uno/wiring_diagram_ascaso_uno_pro_pid_detail.png" alt="Ascaso Uno Wiring Diagram Detail" height="100%" width="100%"></a>
+<p>For ease of repairs and modifications, <a href="http://catch22.eu/ascaso_uno/uno_wiring">here</a> is a reverse-engineered wiring diagram of the Ascaso Uno espresso machine with PID.</p>
+
+
+
+	
+<h3>Baremetal Programming the STM32 with GCC</h3>
+<a href="http://catch22.eu/baremetal/stm32f0xxgnu"><img src="http://catch22.eu/baremetal/stm32f0xxgnu/stm32baremetal.jpg" alt="STM32 baremetal programming" height="100%" width="100%"></a>
+<p>The next series of tutorials explains how to <a href="http://catch22.eu/baremetal/stm32f0xxgnu">program the STM32</a> Cortex M0 MCU directly using Open Source programming tools.</p>
+
+
+
+	
+<h3>Baremetal Programming the LPC11xx with GCC</h3>
+<a href="http://catch22.eu/baremetal/lpc11xxgnu"><img src="http://catch22.eu/baremetal/lpc11xxgnu/lpc1114protoboard.png" alt="LPC1114 baremetal programming setup" height="100%" width="100%"></a>
+<p><a href="http://catch22.eu/baremetal/lpc11xxgnu">This guide</a> shows how to program the 32-bit LPC1114 ARM Cortec M0 processor directly using Open Source programming tools.</p>
+
+
+
+	
+  <h3>Enable the PRU UIO Driver</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-uio/"><img src=
+  "http://catch22.eu/beaglebone/pru_uio.png" width=
+  "100%" height="100%" alt="Beaglebone PRU UIO Driver" /></a>
+   <p>Thuis guide shows how to enable the <a href="http://catch22.eu/beaglebone/beaglebone-pru-uio/">PRUI UIO driver</a> with recent kernel images.</p>
+
+
+	
+  <h3>Omni Wheeled Robot</h3><a href=
+  "http://catch22.eu/omnirobot/robot"><img src=
+  "http://catch22.eu/omnirobot/robot/omnirobot_v0.jpg" width=
+  "100%" height="100%" alt="Omni Wheeled Robot" /></a>
+   <p><a href="http://catch22.eu/omnirobot/robot">This</a> is the homepage for the omni wheeled robot projoct using the beaglebone and stepper motors. </p>
+
+
+	
+  <h3>Beaglebone PRU Programming in C</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-c/"><img src=
+  "http://catch22.eu/seeed_beaglebonegreen.jpg" width=
+  "600" height="379" alt="Beaglebone PRU" /></a>
+   <p><a href="http://catch22.eu/beaglebone/beaglebone-pru-c/">Here</a> is an explanation of coding the Beaglebone PRU in C, comparing assembly instructions with C code. </p>
+
+
+  <h3>Ultimaker 3 Door</h3><a href=
+  "http://catch22.eu/3dprinting/u3door/"><img src=
+  "http://catch22.eu/3dprinting/u3door/front.jpg" width=
+  "600" height="921" alt="Custom UM3 Door" /></a>
+   <p><a href=
+  "http://catch22.eu/3dprinting/u3door/">UM3 door parts</a> which can be printed to aid in better build temperature and enclosure of your 3D printer. </p>
+
+	
+  <h3>Pololu DRV8824 and Microstepping</h3><a href=
+  "http://catch22.eu/omnirobot/drv8824/"><img src=
+  "http://catch22.eu/omnirobot/drv8824/drv8824.jpg" width=
+  "600" height="600" alt="Custom UM3 Door" /></a>
+   <p>The Pololu DRV8824 sepper motor driver board does have an issue with micro-stepping. The theory behind this is explained <a href=
+  "http://catch22.eu/omnirobot/drv8824/">here</a>.</p>
+
+
+  <h3>Best 3D Printing Adhesion Types</h3><a href=
+  "http://catch22.eu/3dprinting/adhesion/"><img src=
+  "http://catch22.eu/3dprinting/adhesion/contestants.jpg" width=
+  "600" height="449" alt="3D Printing Adhesion Comparison" /></a>
+   <p>An objective <a href=
+  "http://catch22.eu/3dprinting/adhesion/">test</a> comparing 3D printing adhesion types to help prevent warping of your prints. </p>
+
+  <h3>The Easy Way to use Github</h3><a href=
+  "http://catch22.eu/github"><img src=
+  "http://catch22.eu/github.png" width=
+  "600" height="246" alt="Github Guide" /></a>
+   <p>The quick and easy way to get to know how to use <a href="http://catch22.eu/github">Github</a> </p>
+
+	
+  <h3>Beaglebone PRU Shared Memory in C</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-ipc"><img src=
+  "http://catch22.eu/seeed_beaglebonegreen.jpg" width=
+  "600" height="379" alt="Beaglebone PRU" /></a>
+   <p><a href="http://catch22.eu/beaglebone/beaglebone-pru-ipc">This</a> is the first example as far as I know to use PRU C code to read and write to shared memory on the Beaglebone. </p>
+
+
+  
+<h3>Japan Robot Stores</h3>
+<a href="http://catch22.eu/japanrobotstores">
+<img src="http://catch22.eu/japanrobotstores/robosquare.jpg" width="600" height="338" alt="RoboSquare Fokuoka" /></a>
+<p><a href="http://catch22.eu/japanrobotstores">Here</a> you&#39;ll find a report of Japan's best robot and electronic components stores. </p>
+
+
+   <h3>Pivot Robot Project</h3><a href=
+   "http://catch22.eu/robotproject/"><img src=
+   "http://catch22.eu/robotproject/frontup.jpg" width="575" height="338" alt=
+   "Pivot Hexapod Robot Design and Building" /></a>
+   <p>How to design, build, and program an autonomous walking robot can be found <a href="http://catch22.eu/robotproject/">here</a>.</p><br />
+   <br />
+
+   <h3>HTC Desire SV</h3><a href=
+   "http://catch22.eu/htcdesiresv/"><img src=
+   "http://catch22.eu/htcdesiresv/desiresv.png" width=
+   "500" height="455" alt="Evolution Airbrush" /></a>
+   <p><a href="http://catch22.eu/htcdesiresv/">Here</a> you&#39;ll find
+   a review of the HTC Desire SV Dual SIM smartphone, and a guide how to root it. </p>
+
+   <h3>Scale Modelling and Airbrush Reviews</h3><a href=
+   "http://catch22.eu/modelling/"><img src=
+   "http://catch22.eu/modelling/evolution/evolution.png" width=
+   "600" height="327" alt="Evolution Airbrush" /></a>
+   <p><a href="http://catch22.eu/modelling/">Here</a> you&#39;ll find
+   a review of the Harder and Steenbeck Evolution airbrush, the Fengda BD-180 Aribrush and a photo report of EuroMilitaire.</p>
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22.eu/japanrobotstores/">Japan Robot Stores</a></li>
+  <li><a href="http://catch22.eu/omnirobot/">Omni Robot</a></li>
+  <li><a href="http://catch22.eu/robotproject/">Pivot Robot</a></li>
+  <li><a href="http://catch22.eu/beaglebone/">Beaglebone Programming</a></li>
+  <li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

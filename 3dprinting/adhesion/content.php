@@ -1,0 +1,77 @@
+<div class="content">
+			<h2>Introduction</h2>
+			An idea popped up to get a better, more objective comparison of different build plate adhesion solutions for ABS. <br /><br /> The idea is simple: divide the build plate into four equal segments, and apply build plate adhesion solutions (glue, hairspray, juice and the like), and print four 3D objects on these segments. It's probably important to have the four segments on equal distance from the centre of the build plate, to rule out any non-uniform temperature. <br /><br /> The results of the four prints can be quantitatively compared by measuring warping, but also qualitatively by visual comparison. This test was first introduced on the <a href="https://ultimaker.com/en/community/39763-abs-build-plate-adhesion-shoot-out-your-votes-please">Ultimaker Forum</a>, and results publiches on this page. Feel free to add comments (or your own tests!, to the ultimaker forum. <br /><br />
+			<h2>The contestants</h2>
+			Based on my own preferences, but also on suggestions of others, I've selevted following bed adhesion types:<br /><br />	    
+
+		    <ul class="blocklist">
+        		  <li>Ultimakers supplied glue stick: UHU Stic, in the upper left corner</li>
+		          <li>ABS Juice, made from black ABS scrap parts and Acetone, in the lower left corner</li>
+        		  <li>3D Lac, in the upper right corner</li>
+		          <li>Wood glue (Bison brand) diluted with water, in the lower right corner</li>
+        	</ul>
+
+			<img src="contestants.jpg" width="600" height="449" alt="The contestants" /><br /><br />
+
+			For those interested, the printer settings are summarized here as well:<br /><br />	
+
+		    <ul class="blocklist">
+        		  <li>Printer: An Ultimaker 3 with custom build front door</li>
+        		  <li>ABS: Innofil3D ABS</li>
+		          <li>Extruder Temperature: 240C</li>
+        		  <li>Heated Bed Temperature: 85C</li>
+        		  <li>Layer height: 0.15mm</li>
+        		  <li>Print speed: 20mm/sec (40mm/sec for infill))</li>
+        		  <li>Fan off</li>
+        		  <li>Objects: 4 blocks of 40x40x10mm, placed at locations X: +-40mm, Y +-40mm</li>
+        	</ul>
+
+			<h2>The First Layer</h2>
+			The first layer was observed and for all 4 samples the first layer was extruded well on the heated bed. 	
+			<img src="firstlayer.jpg" width="600" height="338" alt="The first layer" /><br /><br />
+
+			<h2>And the winner is...</h2>
+			Since it is said pictures say more than a thousand words:<br /><br />
+
+			<img src="finished.jpg" width="600" height="700" alt="Result" /><br />
+			<i>The wood glue sample loosened on the last layer, and together with the UHU Stic, shows severe warping</i><br /><br />
+
+			<img src="3dlac.jpg" width="600" height="269" alt="3D Lac Sample" /><br />
+			<i>3D Lac Sample stuck very well to the build plate, even after cooling down, and no signs of warping</i><br /><br />
+
+			<img src="absjuice.jpg" width="600" height="241" alt="3D Lac Sample" /><br />
+			<i>The ABS Juice sample hold on well, it detached during cooldown of the build plate with barely noticeable warping</i><br /><br />
+
+			<img src="frontview.jpg" width="600" height="88" alt="Result" /><br />
+			<i>From left to right: 3D Lac, ABS Juice, UHU Stic, Wood Glue</i><br /><br />
+
+			Pure luck, the test almost finshed the last layer, and the wood-glue sample detached from the build platform... Also, two classic cases of warping can be seen on the wood glue sample, but also the UHU Stic. <br /><br /> It was further noticed, that after printing was finished, the ABS Juice sample started to loosen (also noticed by the little sound it is accompanied with). The 3D LAC remained detached remarkably well up untill the build plate reached room temperature again. 
+			
+			So in essence: here is the final comparison:
+		    <ul class="blocklist">
+        		  <li>The winner: 3D Lac. No warping at all, and the print remained stuck on the build plate even after cooling down. Advantage as well that it is very easy to apply. </li>
+        		  <li>Second place: ABS Juice. Minute warping (barely noticable), and detachment while cooling down the build plate. Disadvantage compared to 3D Lac is that it can be quite messy to apply, and the juice has to be prepared as well.</li>
+        		  <li>The loosers: Wood glue and UHU Stic. Wood glue detached on the final layer, and UHU Stic was on its way to detach itself during printing. Warping is equally severe with both mehods. </li>
+        	</ul>
+
+			Measured temperatures shared here as well (note the somehow quite large temperature swings, with 66 peaks which coincide in number with the 66 layers the model is build of):
+			<img src="adhesiontemp.png" width="90%" height="90%" alt="Temperature Monitoring" /><br />
+			<i>Measured temperatured on the print head, about 10mm from the build plate, and the x-motor</i><br /><br />
+		
+			<h2>Conclusion</h2>
+			With a slight advantage based on how well the models stuck to the build plate, but also with the absence of warping and the ease of application compared to ABS juice, the winner in this case is 3D Lac. Wood glue, and remarkably as Ultimakers supplies the UHU Stick with their printer (even being promoted to be used for ABS in documentation) seems unsuitable for application with ABS. It has to be noted that there is a measured temperature difference between the front and back of the printer as well, so more tests are adviced performed in a slightly different setup (see hints and tips below).<br /><br />
+
+			<h2>Hints and Tips performing your own test</h2>
+			Some tips gained from this insight:<br /><br />
+		    <ul class="blocklist">
+        		  <li>Use smaller objects (I would now recommend 5mm height squares instead of 10mm). Warping already occured halfway, and the risk of detachment from the build plate was too high </li>
+        		  <li>Use two adhesion methods instead of four at a time, also to minimize the risk of detachment, and rule out temperature variations between the front and back of the build plate</li>
+        		  <li>Use at least print settings and an adhesion type you are familiar with to ensure at least one of the adhesion methods works</li>
+        		  <li>Ensure to have an equal distance of all models to the center of the buld plate, to rule out non-uniform temperature</li>
+        		  <li>Share your results or feel free to comment here: <a href="https://ultimaker.com/en/community/39763-abs-build-plate-adhesion-shoot-out-your-votes-please">Ultimaker Forum</a>.</li>
+        	</ul>
+        
+        <br />
+        <br />
+        <br />
+</div>

@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.9" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content="Wiring diagram (schematics) of the Ascaso Uno Professional with PID" />
+  <meta name="keywords" content="Ascaso, wiring, schematics, diagram, uno, pid, switches" />
+  <title>Ascaso Uno Professional PID Wiring Diagram</title>
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Ascaso Uno Professional PID: Wiring Diagram</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22.eu/">Blog</a></li>
+  <li><a href="http://catch22.eu/ascaso_uno/uno_leaking/">Repair Leaking Boiler</a></li>
+  <li><a href="http://catch22.eu/ascaso_uno/uno_wiring/">Wiring Diagram</a></li>
+</ul>
+
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+<h2>Wiring Diagram</h2>
+<p>By reverse-engineering, the wiring diagram (schematics) of the Ascaso Uno Steel Professional with PID is determined:</p>
+<img src="wiring_diagram_ascaso_uno_pro_pid.jpg" alt="Wiring Diagram Ascaso Uno Professional PID" height="100%" width="100%"><br><br>
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22.eu/">Blog</a></li>
+  <li><a href="http://catch22.eu/ascaso_uno/uno_leaking/">Repair Leaking Boiler</a></li>
+  <li><a href="http://catch22.eu/ascaso_uno/uno_wiring/">Wiring Diagram</a></li>
+</ul>
+
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

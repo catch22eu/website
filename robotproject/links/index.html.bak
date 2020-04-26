@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+
+  <title>Links page of Pivot, the autonomous walking hexapod
+  robot</title>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <meta name="description" content="Links page of Pivot, the autonomous walking hexapod robot" />
+  <meta name="keywords" content="robot, walk, walking, gait, servo, acroname, brainstem, garcia" />
+  <link rel="stylesheet" href="https://catch22.eu/styles.css" type="text/css" />
+</head>
+
+
+  <body>
+    <div class="pagewidth">
+      
+    <div class="header">
+      <!-- TITLE -->
+
+      <h1><a href="#">Pivot, the Autonomous Walking Robot</a></h1>
+
+      <h2>Robot Links</h2><!-- END TITLE -->
+    </div>
+
+
+      <div class="nav">
+          
+<ul>
+   <li><a href="http://catch22.eu/robotproject/">Home</a></li>
+   <li><a href="http://catch22.eu/robotproject/design/">Design</a></li>
+   <li><a href="http://catch22.eu/robotproject/building/">Building</a></li>
+   <li><a href="http://catch22.eu/robotproject/programming/">Programming</a></li>
+   <li><a href="http://catch22.eu/robotproject/movies/" rel="nofollow">Movies</a></li>
+   <li><a href="http://catch22.eu/robotproject/links/">Links</a></li>
+</ul>
+
+
+      </div>
+      <div class="page-wrap">
+        
+      <div class="content">
+        <!-- CONTENT -->
+
+        <h3>Links</h3>
+
+        <p>Following links are used for reference to buy parts,
+        investigate kinds of robots, and nice sites for fun.</p>
+
+        <h3>Robot Building Parts</h3>
+
+        <p><a href=
+        "http://www.graupner.com">http://www.graupner.com</a> and
+        <a href=
+        "http://www.servocity.com">http://www.servocity.com</a>: Show
+        all kinds of servos, and has information about servo
+        specifications and types of servos.<br />
+        <a href="http://www.ksmetals.com">http://www.ksmetals.com</a>:
+        Building materials used for the robot. You can not find what
+        they sell in local hobby shops however. Graupner, mentioned
+        above, does however show on-site what kind of metal building
+        materials they offer.<br />
+        <a href="http://www.gumstix.com">http://www.gumstix.com</a>:
+        Very interesting micro computer which might be purchased in a
+        later phase to give the robot much more intelligence when the
+        software in the Brainstem is getting tool large.<br />
+        <a href="http://www.hitecrcd.com/" rel=
+        "nofollow">http://www.hitecrcd.com</a>: Like Graupner, they
+        sell servos, and on this site you can find specs of them.<br />
+        <a href="http://www.acroname.com">http://www.acroname.com</a>:
+        The controller used in the robot.<br />
+        <a href="http://www.conrad.nl">http://www.conrad.nl</a>:
+        Excellent Dutch hobby -and electronics shop selling everything
+        you need (apart from controllers) to build your robot.</p>
+
+        <h3>Robot Examples</h3>
+
+        <p><a href="http://www.tarry.de">http://www.tarry.de</a>: Very
+        clean, high-tech design hexapod.<br />
+        <a href=
+        "http://www.lynxmotion.com">http://www.lynxmotion.com</a>:
+        Shows several complete robot kits. The website also has
+        interesting videos of the robots they sell, and shows the
+        hexapod design video where you can see the sliding legs.<br />
+        <a href=
+        "http://home.earthlink.net/%7Ehenryarnold">http://home.earthlink.net/~henryarnold</a>:
+        Nice design with the same concept as used above.<br />
+        <a href=
+        "http://home.ctlnet.com/%7Erobotguy67/hexapod/hexapod.htm" rel=
+        "nofollow">home.ctlnet.com/~robotguy67/hexapod/hexapod.htm</a>:
+        Shows excellent examples of high tech, home built robots. The
+        site is interesting as well to gain knowledge on robot building
+        from a builders&#39; perspective.<br />
+        <a href=
+        "http://www.beam-online.com">http://www.beam-online.com</a>:
+        Uses 5 servos for walking. It shows an example of how to use
+        servos directly as hinges, and how to attach legs to
+        them.<br />
+        <a href="http://bots_by_jbs.solarbotics.net/walker.html" rel=
+        "nofollow">http://bots_by_jbs.solarbotics.net/walker.html</a>:
+        The incredible walking machine. Uses solar power, and
+        customized motors to propel itself.<br /></p>
+
+        <h3>Other</h3>
+
+        <p><a href=
+        "http://www.batteryuniversity.com">http://www.batteryuniversity.com</a>:
+        Useful information how to handle chargeable batteries.<br />
+        <a href="http://catch22.eu/htcdesiresv/">catch22.eu/htcdesiresv</a>: Interesting page on the new Dual SIM HTC Desire SV<br />
+        <a href="http://maartenhotze.nl/">maartenhotze.nl</a>: My photo site.
+
+        </p>
+        
+        <a href="http://catch22.eu/htcdesiresv/review/" >
+        <img style="display: block; margin-left: auto; margin-right: auto;"
+        src="http://catch22.eu/linkbanner2.jpg" alt="link" /></a>
+        <br />
+        
+       
+        <!-- END CONTENT -->
+      </div>
+
+
+        <div class="sidebar">
+          
+        <h4>About this web page</h4>
+
+        <p>This web page describes intersting links to other robot related pages.</p>
+
+        <h4>What you can find on this site</h4>
+
+        <p>How to start a project by thinking about the <a href=
+        "http://catch22.eu/robotproject/design">design</a> of the
+        robot. This will save a lot of headaches when done properly.
+        Next, a page how to <a href=
+        "http://catch22.eu/robotproject/building">build</a> the robot,
+        and how to <a href=
+        "http://catch22.eu/robotproject/programming">program</a> the
+        micro controller for autonomous walking with obstacle avoiding
+        capability. For fun, <a href=
+        "http://catch22.eu/robotproject/movies" rel=
+        "nofollow">movies</a> and <a href=
+        "http://catch22.eu/robotproject/links">links</a> to other
+        useful websites can also be found.</p>
+
+
+          <h4>Related</h4>
+          
+<ul>
+   <li><a href="http://catch22.eu/robotproject/">Home</a></li>
+   <li><a href="http://catch22.eu/robotproject/design/">Design</a></li>
+   <li><a href="http://catch22.eu/robotproject/building/">Building</a></li>
+   <li><a href="http://catch22.eu/robotproject/programming/">Programming</a></li>
+   <li><a href="http://catch22.eu/robotproject/movies/" rel="nofollow">Movies</a></li>
+   <li><a href="http://catch22.eu/robotproject/links/">Links</a></li>
+</ul>
+
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22.eu/">Catch22 Blog</a></li>
+	<li><a href="http://catch22.eu/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22.eu/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22.eu/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22.eu/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22.eu/free" title="free internet">
+  <img src="https://catch22.eu/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>

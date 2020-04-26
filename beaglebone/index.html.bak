@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<head>
+  <meta name="generator" content="Bluefish 2.2.4" />
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+  <meta name="description" content=
+  "Beaglebone project blog, providing tutorials how to use this SBC in C. " />
+  <meta name="keywords" content=
+  "beaglebone, pru, c, programming, gpio, c, asm, code" />
+
+  <title>Beaglebone Blog</title>
+  <link rel="stylesheet" href="https://catch22eu.github.io/website/styles.css" type="text/css" />
+</head>
+
+  <body>
+    <div class="pagewidth">
+      
+<div class="header">
+  <h1><a href="#">Beaglebone Blog</a></h1>
+  <h2><a href="http://catch22.eu">Catch22.eu</a></h2>
+</div>
+
+      <div class="nav">
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+      </div>
+      <div class="page-wrap">
+        
+<div class="content">
+	<h2>Welcome</h2>
+	<p>Welcome to Catch22.eu Beaglebone Blog.</p>
+
+	
+  <h3>Beaglebone PRU Programming in C</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-c/"><img src=
+  "http://catch22.eu/seeed_beaglebonegreen.jpg" width=
+  "600" height="379" alt="Beaglebone PRU" /></a>
+   <p><a href="http://catch22.eu/beaglebone/beaglebone-pru-c/">Here</a> is an explanation of coding the Beaglebone PRU in C, comparing assembly instructions with C code. </p>
+
+
+	
+  <h3>Enable the PRU UIO Driver</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-uio/"><img src=
+  "http://catch22.eu/beaglebone/pru_uio.png" width=
+  "100%" height="100%" alt="Beaglebone PRU UIO Driver" /></a>
+   <p>Thuis guide shows how to enable the <a href="http://catch22.eu/beaglebone/beaglebone-pru-uio/">PRUI UIO driver</a> with recent kernel images.</p>
+
+
+	
+  <h3>Beaglebone PRU Shared Memory in C</h3><a href=
+  "http://catch22.eu/beaglebone/beaglebone-pru-ipc"><img src=
+  "http://catch22.eu/seeed_beaglebonegreen.jpg" width=
+  "600" height="379" alt="Beaglebone PRU" /></a>
+   <p><a href="http://catch22.eu/beaglebone/beaglebone-pru-ipc">This</a> is the first example as far as I know to use PRU C code to read and write to shared memory on the Beaglebone. </p>
+
+
+
+</div>
+
+        <div class="sidebar">
+          
+ 
+
+          <h4>Related</h4>
+          
+<ul>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/">Beaglebone Home</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-ipc">Pru Shared Memory in C</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-c">Pru in C Tutorial</a></li>
+  <li><a href="http://catch22eu.github.io/website/beaglebone/beaglebone-pru-uio/">Enabling the PRU UIO Driver</a></li>
+</ul>
+
+          <h4>Other</h4>
+          
+<ul class="blocklist">
+	<li><a href="http://catch22eu.github.io/website/">Catch22 Blog</a></li>
+	<li><a href="http://catch22eu.github.io/website/modelling/">Scale Modelling</a></li>
+	<li><a href="http://catch22eu.github.io/website/robotproject/">Pivot Robot Project</a></li>
+	<li><a href="http://catch22eu.github.io/website/japanrobotstores/">Japanese Robot Stores</a></li>
+	<li><a href="http://catch22eu.github.io/website/htcdesiresv/">HTC Desire SV</a></li>
+	<li><a href="http://maartenhotze.nl/">Photography</a></li>
+</ul>
+        </div>
+        <div class="clear">
+        </div>
+      </div>
+      
+<div class="footer">
+  <p><a href="https://catch22eu.github.io/website/free" title="free internet">
+  <img src="https://catch22eu.github.io/website/free_white_logo.png" alt"free internet" width="12" align="top"> free internet</a> | 
+  © Catch22.eu | Design: <a href="http://www.catch22.eu">Catch22.eu</a></p>
+</div>
+
+    </div>
+  </body>
+</html>
